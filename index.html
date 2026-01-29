@@ -118,40 +118,51 @@ function mazeGame(){
  let drawing=false;
  let top=false,bottom=false,left=false,right=false;
 
- c.addEventListener("pointerdown",e=>{
-  drawing=true;
+ c.addEventListener("pointerdown", e=>{
+  drawing = true;
+  movedRight = false;
+  movedDown = false;
+
+  const x = e.offsetX;
+  const y = e.offsetY;
+
+  startedAtGirl =
+    Math.abs(x-girl.x) < 30 &&
+    Math.abs(y-girl.y) < 30;
+
   ctx.beginPath();
-  ctx.moveTo(e.offsetX,e.offsetY);
-  top=bottom=left=right=false;
- });
+  ctx.moveTo(x,y);
+});
+
 
  c.addEventListener("pointerup",()=>drawing=false);
 
- c.addEventListener("pointermove",e=>{
-  if(!drawing) return;
-  const x=e.offsetX,y=e.offsetY;
+ c.addEventListener("pointermove", e=>{
+  if(!drawing || !startedAtGirl) return;
+
+  const x = e.offsetX;
+  const y = e.offsetY;
+
   ctx.strokeStyle="#ff69b4";
   ctx.lineWidth=3;
-  ctx.lineTo(x,y); ctx.stroke();
+  ctx.lineTo(x,y);
+  ctx.stroke();
 
-  if(x<=5) left=true;
-  if(x>=c.width-5) right=true;
-  if(y<=5) top=true;
-  if(y>=c.height-5) bottom=true;
+  // detect direction
+  if(x > girl.x + 40) movedRight = true;
+  if(y > girl.y + 40) movedDown = true;
 
-  const sidesTouched =
-  (top?1:0) +
-  (bottom?1:0) +
-  (left?1:0) +
-  (right?1:0);
-
-if(sidesTouched >= 3){
-  drawing = false;
-  c.removeEventListener("pointermove", arguments.callee);
-  setTimeout(mazeGifts, 500);
+  // 🏁 FINAL WIN CONDITION
+  if(
+    movedRight &&
+    movedDown &&
+    Math.abs(x-boy.x) < 30 &&
+    Math.abs(y-boy.y) < 30
+  ){
+    drawing = false;
+    setTimeout(mazeGifts, 500);
   }
- });
-}
+});
 
 /* ============== MAZE GIFTS + LETTER ============== */
 
