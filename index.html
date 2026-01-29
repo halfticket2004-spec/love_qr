@@ -3,15 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Love Game ❤️</title>
+<title>For My Love ❤️</title>
 
 <style>
-body{
+*{
   margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
   height:100vh;
   overflow:hidden;
   background:linear-gradient(135deg,#fbd3e9,#bb377d);
-  font-family:Georgia,serif;
+  font-family:Georgia, serif;
   color:white;
   text-align:center;
 }
@@ -22,26 +27,27 @@ body{
   inset:0;
   pointer-events:none;
   overflow:hidden;
-  z-index:1;
+  z-index:0;
 }
+
 .flower{
   position:absolute;
   top:-10%;
   font-size:22px;
   animation: fall linear infinite;
 }
+
 @keyframes fall{
   to{ transform:translateY(110vh); }
 }
 
 /* MAIN APP */
-#app{
+.container{
   position:relative;
   z-index:2;
-  padding-top:80px;
+  padding:30px;
 }
 
-/* INPUT + BUTTON */
 input{
   width:80%;
   padding:14px;
@@ -50,6 +56,7 @@ input{
   border-radius:12px;
   text-align:center;
 }
+
 button{
   padding:14px 36px;
   font-size:18px;
@@ -65,51 +72,53 @@ button{
 
 <body>
 
-<!-- FLOWERS -->
+<!-- FLOWERS LAYER -->
 <div id="effects"></div>
 
-<!-- MUSIC -->
+<!-- BACKGROUND MUSIC -->
 <audio id="bgMusic" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b3b8c6e7d.mp3">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b3b8c6e7d.mp3" type="audio/mpeg">
 </audio>
 
-<!-- MAIN APP -->
-<div id="app">
+<!-- FIRST SCREEN -->
+<div class="container" id="app">
   <h1>yevaru ra nuvvu 👀</h1>
   <br>
-  <button onclick="startMusic()">Tap to start ❤️</button>
+  <button onclick="startExperience()">Tap to start ❤️</button>
   <br><br>
+
   <input id="answer" placeholder="Type here">
   <br>
-  <button onclick="checkAnswer()">Submit</button>
+
+  <button onclick="check()">Submit</button>
 </div>
 
 <script>
 /* FLOWERS */
-const effects=document.getElementById("effects");
 for(let i=0;i<25;i++){
   const f=document.createElement("div");
   f.className="flower";
   f.innerHTML="🌸";
   f.style.left=Math.random()*100+"vw";
   f.style.animationDuration=5+Math.random()*6+"s";
-  effects.appendChild(f);
+  document.getElementById("effects").appendChild(f);
 }
 
 /* MUSIC */
-function startMusic(){
+function startExperience(){
   const m=document.getElementById("bgMusic");
   m.volume=0.6;
   m.play().catch(()=>{});
 }
 
-/* PASSWORD CHECK */
-function checkAnswer(){
+/* ANSWER CHECK */
+function check(){
   const v=document.getElementById("answer").value.trim().toLowerCase();
   if(v==="its me"){
-    mazeGame();
+    mazeGame();   // ⚠️ your existing maze code will handle this
   }else{
-    alert("yevaru nanna rey nuvvu.. vellipora nanna 😤");
+    document.getElementById("app").innerHTML=
+      "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
   }
 }
 
