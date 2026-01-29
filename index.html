@@ -115,7 +115,7 @@ function startExperience(){
 function check(){
   const v=document.getElementById("answer").value.trim().toLowerCase();
   if(v==="its me"){
-    mazeGame();   // ⚠️ your existing maze code will handle this
+    mazeGame();
   }else{
     document.getElementById("app").innerHTML=
       "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
@@ -137,8 +137,16 @@ function mazeGame(){
 
  const c=document.getElementById("draw");
  const ctx=c.getContext("2d");
+
+ /* ✅ FIXED: missing variables */
+ const girl = { x: 60, y: 260 };
+ const boy  = { x: 260, y: 60 };
+
+ let movedRight = false;
+ let movedDown = false;
+ let startedAtGirl = false;
+
  let drawing=false;
- let top=false,bottom=false,left=false,right=false;
 
  c.addEventListener("pointerdown", e=>{
   drawing = true;
@@ -154,8 +162,7 @@ function mazeGame(){
 
   ctx.beginPath();
   ctx.moveTo(x,y);
-});
-
+ });
 
  c.addEventListener("pointerup",()=>drawing=false);
 
@@ -170,11 +177,9 @@ function mazeGame(){
   ctx.lineTo(x,y);
   ctx.stroke();
 
-  // detect direction
   if(x > girl.x + 40) movedRight = true;
   if(y > girl.y + 40) movedDown = true;
 
-  // 🏁 FINAL WIN CONDITION
   if(
     movedRight &&
     movedDown &&
@@ -184,7 +189,8 @@ function mazeGame(){
     drawing = false;
     setTimeout(mazeGifts, 500);
   }
-});
+ });
+}
 
 /* ============== MAZE GIFTS + LETTER ============== */
 
@@ -279,7 +285,7 @@ function carLetter(){
  </div>`;
 }
 
-/* ================= FINAL PAGE (END) ================= */
+/* ================= FINAL PAGE ================= */
 
 function finalPage(){
  document.getElementById("app").innerHTML=
@@ -294,4 +300,3 @@ function finalPage(){
 
 </body>
 </html>
-
