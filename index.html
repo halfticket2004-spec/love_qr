@@ -1,25 +1,17 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Love ❤️</title>
+<title>Love Game ❤️</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
 body{
+  margin:0;
   height:100vh;
   overflow:hidden;
   background:linear-gradient(135deg,#fbd3e9,#bb377d);
-  font-family:Georgia, serif;
+  font-family:Georgia,serif;
   color:white;
   text-align:center;
 }
@@ -30,7 +22,6 @@ body{
   inset:0;
   pointer-events:none;
   overflow:hidden;
-  z-index:0;
 }
 
 .flower{
@@ -44,11 +35,11 @@ body{
   to{ transform:translateY(110vh); }
 }
 
-/* MAIN APP */
-.container{
+/* START SCREEN */
+#startScreen{
   position:relative;
   z-index:2;
-  padding:30px;
+  padding-top:80px;
 }
 
 input{
@@ -75,57 +66,58 @@ button{
 
 <body>
 
-<!-- FLOWERS LAYER -->
+<!-- FLOWERS -->
 <div id="effects"></div>
 
-<!-- BACKGROUND MUSIC -->
+<!-- MUSIC -->
 <audio id="bgMusic" loop>
   <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b3b8c6e7d.mp3" type="audio/mpeg">
 </audio>
 
-<!-- FIRST SCREEN -->
-<div class="container" id="app">
+<!-- START SCREEN -->
+<div id="startScreen">
   <h1>yevaru ra nuvvu 👀</h1>
   <br>
-  <button onclick="startExperience()">Tap to start ❤️</button>
+  <button onclick="startMusic()">Tap to start ❤️</button>
   <br><br>
-
   <input id="answer" placeholder="Type here">
   <br>
-
-  <button onclick="check()">Submit</button>
+  <button onclick="checkAnswer()">Submit</button>
 </div>
 
 <script>
 /* FLOWERS */
+const effects = document.getElementById("effects");
 for(let i=0;i<25;i++){
   const f=document.createElement("div");
   f.className="flower";
   f.innerHTML="🌸";
   f.style.left=Math.random()*100+"vw";
   f.style.animationDuration=5+Math.random()*6+"s";
-  document.getElementById("effects").appendChild(f);
+  effects.appendChild(f);
 }
 
 /* MUSIC */
-function startExperience(){
+function startMusic(){
   const m=document.getElementById("bgMusic");
   m.volume=0.6;
   m.play().catch(()=>{});
 }
 
 /* ANSWER CHECK */
-function check(){
+function checkAnswer(){
   const v=document.getElementById("answer").value.trim().toLowerCase();
-  if(v==="its me"){
-    mazeGame();   // ⚠️ your existing maze code will handle this
+
+  if(v === "its me"){
+    document.getElementById("startScreen").style.display="none";
+    mazeGame(); // 👈 YOUR EXISTING MAZE FUNCTION
   }else{
-    document.getElementById("app").innerHTML=
-      "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
+    alert("yevaru nanna rey nuvvu.. vellipora nanna 😤");
   }
 }
 </script>
 
+<!-- ===== STOP HERE ===== -->
 
 /* ================= MAZE GAME ================= */
 
