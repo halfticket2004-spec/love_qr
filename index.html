@@ -123,48 +123,59 @@ function check(){
 }
 
 /* ================= MAZE GAME ================= */
-
 function mazeGame(){
  document.getElementById("app").innerHTML=
  `<h2>Find him ❤️</h2>
- <p>Every path inside fails… love finds a way around</p>
- <div class="maze-wrap">
-   <img src="IMG_20260129_180303.png">
-   <canvas id="draw" class="maze-overlay" width="340" height="340"></canvas>
-   <div class="girl">👩</div>
-   <div class="boy">👦</div>
+ <p>Love doesn’t follow rules or walls</p>
+
+ <div class="maze-wrap" style="position:relative;width:340px;margin:20px auto;">
+   <img src="IMG_20260129_180303.png" style="width:340px;display:block;">
+   <canvas id="draw" width="340" height="340"
+     style="position:absolute;top:0;left:0;"></canvas>
+
+   <div class="girl" style="
+     position:absolute;
+     left:20px;
+     bottom:20px;
+     font-size:28px;">👩</div>
+
+   <div class="boy" style="
+     position:absolute;
+     right:-40px;
+     top:-40px;
+     font-size:28px;">👦</div>
  </div>`;
 
- const c=document.getElementById("draw");
- const ctx=c.getContext("2d");
+ const c = document.getElementById("draw");
+ const ctx = c.getContext("2d");
 
- /* ✅ FIXED: missing variables */
- const girl = { x: 60, y: 260 };
- const boy  = { x: 260, y: 60 };
+ // girl start (inside maze)
+ const girl = { x: 35, y: 300 };
 
- let movedRight = false;
- let movedDown = false;
+ // boy end (outside maze box)
+ const boy = { x: 360, y: -20 };
+
+ let drawing = false;
  let startedAtGirl = false;
 
- let drawing=false;
-
  c.addEventListener("pointerdown", e=>{
-  drawing = true;
-  movedRight = false;
-  movedDown = false;
-
   const x = e.offsetX;
   const y = e.offsetY;
 
   startedAtGirl =
-    Math.abs(x-girl.x) < 30 &&
-    Math.abs(y-girl.y) < 30;
+    Math.abs(x - girl.x) < 30 &&
+    Math.abs(y - girl.y) < 30;
 
+  if(!startedAtGirl) return;
+
+  drawing = true;
   ctx.beginPath();
   ctx.moveTo(x,y);
  });
 
- c.addEventListener("pointerup",()=>drawing=false);
+ c.addEventListener("pointerup", ()=>{
+  drawing = false;
+ });
 
  c.addEventListener("pointermove", e=>{
   if(!drawing || !startedAtGirl) return;
@@ -172,22 +183,18 @@ function mazeGame(){
   const x = e.offsetX;
   const y = e.offsetY;
 
-  ctx.strokeStyle="#ff69b4";
-  ctx.lineWidth=3;
+  ctx.strokeStyle = "#ff69b4";
+  ctx.lineWidth = 3;
   ctx.lineTo(x,y);
   ctx.stroke();
 
-  if(x > girl.x + 40) movedRight = true;
-  if(y > girl.y + 40) movedDown = true;
-
+  // ❤️ WIN CONDITION: line touches boy (outside maze)
   if(
-    movedRight &&
-    movedDown &&
-    Math.abs(x-boy.x) < 30 &&
-    Math.abs(y-boy.y) < 30
+    Math.abs(x - boy.x) < 30 &&
+    Math.abs(y - boy.y) < 30
   ){
     drawing = false;
-    setTimeout(mazeGifts, 500);
+    setTimeout(mazeGifts, 400);
   }
  });
 }
