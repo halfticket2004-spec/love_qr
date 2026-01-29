@@ -38,9 +38,33 @@ button{
   from{transform:rotateY(0deg)}
   to{transform:rotateY(180deg)}
 }
-.maze-wrap{position:relative;display:inline-block}
-.maze-wrap img{width:340px}
-.maze-overlay{position:absolute;top:0;left:0}
+.maze-wrap{
+  position:relative;
+  width:340px;
+  margin:auto;
+}
+
+.maze-wrap img{
+  width:340px;
+  display:block;
+}
+
+.maze-overlay{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:5;
+  pointer-events:auto;
+}
+
+
+
+.girl,.boy{
+  pointer-events:none;
+}
+
+
+canvas{touch-action:none}
 .girl,.boy{position:absolute;font-size:28px}
 .girl{left:5px;top:5px}
 .boy{right:5px;bottom:5px}
