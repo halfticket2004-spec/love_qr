@@ -92,52 +92,99 @@ function check(){
  "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
 }
 
-// GAME 1 – MAZE
+// GAME 1 – MAZE (REAL MAZE LOOK)
 function mazeGame(){
- document.getElementById("app").innerHTML=
- `<h2>Find him ❤️</h2>
- <p>Every path inside fails… love finds a way around</p>
- <canvas id="maze" width="360" height="360"></canvas>`;
+  document.getElementById("app").innerHTML =
+  `<h2>Find him ❤️</h2>
+   <p>Every path inside fails… love finds a way around</p>
+   <canvas id="maze" width="360" height="360"></canvas>`;
 
- const c=document.getElementById("maze");
- const x=c.getContext("2d");
- const cx=180,cy=180,r=160;
- const girl={x:cx,y:cy-r+18};
- const boy={x:cx+r-18,y:cy};
- let drawing=false,escaped=false;
+  const canvas = document.getElementById("maze");
+  const ctx = canvas.getContext("2d");
 
- function drawMaze(){
-  x.clearRect(0,0,360,360);
-  x.strokeStyle="black";x.lineWidth=4;
-  x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();
-  x.lineWidth=2;
-  for(let a=0;a<360;a+=15){
-    x.beginPath();
-    x.arc(cx,cy,r-30,a*Math.PI/180,(a+10)*Math.PI/180);
-    x.stroke();
+  const cx = 180, cy = 180, R = 160;
+  let drawing = false;
+  let escaped = false;
+
+  const girl = { x: cx, y: cy - R + 18 };
+  const boy  = { x: cx + R - 18, y: cy };
+
+  // Draw maze
+  function drawMaze(){
+    ctx.clearRect(0,0,360,360);
+
+    // Clip maze inside circle
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.clip();
+
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 3;
+
+    const step = 22;
+    for(let x=40; x<320; x+=step){
+      for(let y=40; y<320; y+=step){
+        if((x+y)%44===0){
+          ctx.beginPath();
+          ctx.moveTo(x,y);
+          ctx.lineTo(x+step,y);
+          ctx.stroke();
+        }
+        if((x*y)%3===0){
+          ctx.beginPath();
+          ctx.moveTo(x,y);
+          ctx.lineTo(x,y+step);
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+
+    // Outer circle
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,0,Math.PI*2);
+    ctx.stroke();
+
+    // Girl & Boy
+    ctx.font = "26px serif";
+    ctx.fillText("👩", girl.x-10, girl.y+10);
+    ctx.fillText("👦", boy.x-10, boy.y+10);
   }
-  x.font="26px serif";
-  x.fillText("👩",girl.x-10,girl.y+10);
-  x.fillText("👦",boy.x-10,boy.y+10);
- }
- drawMaze();
 
- c.addEventListener("pointerdown",e=>{
-  drawing=true;
-  x.beginPath();
-  x.moveTo(e.offsetX,e.offsetY);
- });
- c.addEventListener("pointerup",()=>drawing=false);
- c.addEventListener("pointermove",e=>{
-  if(!drawing) return;
-  let dx=e.offsetX, dy=e.offsetY;
-  x.strokeStyle="#ff69b4";x.lineWidth=3;
-  x.lineTo(dx,dy);x.stroke();
-  if(Math.hypot(dx-cx,dy-cy)>r+5) escaped=true;
-  if(escaped && Math.hypot(dx-boy.x,dy-boy.y)<20){
-    setTimeout(mazeGifts,500);
-  }
- });
+  drawMaze();
+
+  // Drawing logic
+  canvas.addEventListener("pointerdown", e => {
+    drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+  });
+
+  canvas.addEventListener("pointerup", () => drawing = false);
+
+  canvas.addEventListener("pointermove", e => {
+    if(!drawing) return;
+
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    ctx.strokeStyle = "#ff69b4";
+    ctx.lineWidth = 3;
+    ctx.lineTo(x,y);
+    ctx.stroke();
+
+    // Check if user went outside circle
+    if(Math.hypot(x-cx, y-cy) > R + 5){
+      escaped = true;
+    }
+
+    // WIN CONDITION
+    if(escaped && Math.hypot(x-boy.x, y-boy.y) < 20){
+      setTimeout(mazeGifts, 400);
+    }
+  });
 }
 
 // After maze gifts
