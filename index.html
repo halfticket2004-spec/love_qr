@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For My Love ❤️</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
 body{
-  margin:0;
+  height:100vh;
   overflow:hidden;
   background:linear-gradient(135deg,#fbd3e9,#bb377d);
   font-family:Georgia,serif;
@@ -63,12 +64,13 @@ canvas{touch-action:none}
 
 <body>
 
-<audio autoplay loop>
+<audio id="bgMusic" loop>
 <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b6b6f87f1.mp3">
 </audio>
 
 <div class="container" id="app">
 <h1>yevaru ra nuvvu 👀</h1><br>
+<button onclick="startExperience()">Tap to start ❤️</button><br><br>
 <input id="answer" placeholder="Type here">
 <br>
 <button onclick="check()">Submit</button>
@@ -84,6 +86,11 @@ for(let i=0;i<25;i++){
  document.body.appendChild(f);
 }
 
+// music
+function startExperience(){
+ document.getElementById("bgMusic").play().catch(()=>{});
+}
+
 // entry
 function check(){
  let v=document.getElementById("answer").value.trim().toLowerCase();
@@ -92,102 +99,69 @@ function check(){
  "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
 }
 
-// GAME 1 – MAZE (REAL MAZE LOOK)
+/* GAME 1 — MAZE */
 function mazeGame(){
-  document.getElementById("app").innerHTML =
-  `<h2>Find him ❤️</h2>
-   <p>Every path inside fails… love finds a way around</p>
-   <canvas id="maze" width="360" height="360"></canvas>`;
+ document.getElementById("app").innerHTML=
+ `<h2>Find him ❤️</h2>
+ <p>Every path inside fails… love finds a way around</p>
+ <canvas id="maze" width="360" height="360"></canvas>`;
 
-  const canvas = document.getElementById("maze");
-  const ctx = canvas.getContext("2d");
+ const c=document.getElementById("maze");
+ const x=c.getContext("2d");
+ const cx=180,cy=180,R=160;
+ const girl={x:cx,y:cy-R+18};
+ const boy={x:cx+R-18,y:cy};
+ let drawing=false,escaped=false;
 
-  const cx = 180, cy = 180, R = 160;
-  let drawing = false;
-  let escaped = false;
+ function drawMaze(){
+  x.clearRect(0,0,360,360);
 
-  const girl = { x: cx, y: cy - R + 18 };
-  const boy  = { x: cx + R - 18, y: cy };
+  x.save();
+  x.beginPath();
+  x.arc(cx,cy,R,0,Math.PI*2);
+  x.clip();
 
-  // Draw maze
-  function drawMaze(){
-    ctx.clearRect(0,0,360,360);
-
-    // Clip maze inside circle
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.clip();
-
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 3;
-
-    const step = 22;
-    for(let x=40; x<320; x+=step){
-      for(let y=40; y<320; y+=step){
-        if((x+y)%44===0){
-          ctx.beginPath();
-          ctx.moveTo(x,y);
-          ctx.lineTo(x+step,y);
-          ctx.stroke();
-        }
-        if((x*y)%3===0){
-          ctx.beginPath();
-          ctx.moveTo(x,y);
-          ctx.lineTo(x,y+step);
-          ctx.stroke();
-        }
+  x.strokeStyle="black";x.lineWidth=3;
+  const step=22;
+  for(let i=40;i<320;i+=step){
+    for(let j=40;j<320;j+=step){
+      if((i+j)%44===0){
+        x.beginPath();x.moveTo(i,j);x.lineTo(i+step,j);x.stroke();
+      }
+      if((i*j)%3===0){
+        x.beginPath();x.moveTo(i,j);x.lineTo(i,j+step);x.stroke();
       }
     }
-    ctx.restore();
-
-    // Outer circle
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.stroke();
-
-    // Girl & Boy
-    ctx.font = "26px serif";
-    ctx.fillText("👩", girl.x-10, girl.y+10);
-    ctx.fillText("👦", boy.x-10, boy.y+10);
   }
+  x.restore();
 
-  drawMaze();
+  x.lineWidth=4;
+  x.beginPath();x.arc(cx,cy,R,0,Math.PI*2);x.stroke();
 
-  // Drawing logic
-  canvas.addEventListener("pointerdown", e => {
-    drawing = true;
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-  });
+  x.font="26px serif";
+  x.fillText("👩",girl.x-10,girl.y+10);
+  x.fillText("👦",boy.x-10,boy.y+10);
+ }
+ drawMaze();
 
-  canvas.addEventListener("pointerup", () => drawing = false);
-
-  canvas.addEventListener("pointermove", e => {
-    if(!drawing) return;
-
-    const x = e.offsetX;
-    const y = e.offsetY;
-
-    ctx.strokeStyle = "#ff69b4";
-    ctx.lineWidth = 3;
-    ctx.lineTo(x,y);
-    ctx.stroke();
-
-    // Check if user went outside circle
-    if(Math.hypot(x-cx, y-cy) > R + 5){
-      escaped = true;
-    }
-
-    // WIN CONDITION
-    if(escaped && Math.hypot(x-boy.x, y-boy.y) < 20){
-      setTimeout(mazeGifts, 400);
-    }
-  });
+ c.addEventListener("pointerdown",e=>{
+  drawing=true;
+  x.beginPath();x.moveTo(e.offsetX,e.offsetY);
+ });
+ c.addEventListener("pointerup",()=>drawing=false);
+ c.addEventListener("pointermove",e=>{
+  if(!drawing) return;
+  let dx=e.offsetX,dy=e.offsetY;
+  x.strokeStyle="#ff69b4";x.lineWidth=3;
+  x.lineTo(dx,dy);x.stroke();
+  if(Math.hypot(dx-cx,dy-cy)>R+5) escaped=true;
+  if(escaped && Math.hypot(dx-boy.x,dy-boy.y)<20){
+    setTimeout(mazeGifts,400);
+  }
+ });
 }
 
-// After maze gifts
+// after maze gifts
 function mazeGifts(){
  document.getElementById("app").innerHTML=
  `<h2>You found a way 💖</h2>
@@ -207,11 +181,11 @@ function mazeLetter(){
  I’ll find a way to make you smile 😁<br><br>
  Just the way you found your way in the game 💖
  <br><br>
- <button onclick="carGame()">Start next game 🚗</button>
+ <button onclick="carGame()">Next game 🚗</button>
  </div>`;
 }
 
-// GAME 2 – CAR
+/* GAME 2 — CAR */
 function carGame(){
  document.getElementById("app").innerHTML=
  `<h2>Survive 1 minute 🚗</h2>
@@ -234,17 +208,15 @@ function carGame(){
  function loop(){
   x.clearRect(0,0,300,420);
   x.fillStyle="#444";x.fillRect(80,0,140,420);
-  x.font="28px serif";
-  x.fillText("🚗",car.x,car.y);
+  x.font="28px serif";x.fillText("🚗",car.x,car.y);
 
   if(Math.random()<0.04)
     obs.push({x:90+Math.random()*120,y:-20});
 
   for(let o of obs){
-    o.y+=4;
-    x.fillText("🚙",o.x,o.y);
+    o.y+=4;x.fillText("🚙",o.x,o.y);
     if(Math.abs(o.x-car.x)<25 && Math.abs(o.y-car.y)<25){
-      carGame(); return;
+      carGame();return;
     }
   }
   obs=obs.filter(o=>o.y<450);
@@ -258,7 +230,7 @@ function carGame(){
  loop();
 }
 
-// After car gifts
+// after car gifts
 function carGifts(){
  document.getElementById("app").innerHTML=
  `<h2>You made it 💖</h2>
