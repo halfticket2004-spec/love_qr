@@ -188,19 +188,6 @@ function mazeLetter(){
  </div>`;
 }
 
-// final promise page
-function finalPromise(next){
- document.getElementById("app").innerHTML=
- `<div class="letter page">
-  I promise you 💖<br><br>
-  I will stay with you<br>
-  until the last page of my book 🫂<br><br>
-  ${next==='car'
-   ? '<button onclick="carGame()">Start next game 🚗</button>'
-   : '📖 The End'}
- </div>`;
-}
-
 /* CAR GAME (unchanged, working) */
 function carGame(){
  document.getElementById("app").innerHTML=
@@ -243,6 +230,41 @@ function carGame(){
  }
  loop();
 }
+
+// After car gifts
+function carGifts(){
+ document.getElementById("app").innerHTML=
+ `<h2>You made it 💖</h2>
+ <div class="gifts">
+  <div class="gift" onclick="carLetter()">🎁</div>
+  <div class="gift" onclick="carLetter()">🎁</div>
+  <div class="gift" onclick="carLetter()">🎁</div>
+  <div class="gift" onclick="carLetter()">🎁</div>
+ </div>`;
+}
+
+function carLetter(){
+ document.getElementById("app").innerHTML=
+ `<div class="letter">
+ i promise you 💌<br><br>
+ On gloomy and bad days,<br>
+ I will reach you through all the hurdles<br>
+ as fast as I can 🫶<br><br>
+ just the way you did in the game 💖
+ </div>`;
+}
+
+
+// final promise page
+function finalPromise(next){
+ document.getElementById("app").innerHTML=
+ `<div class="letter page">
+  I promise you 💖<br><br>
+  I will stay with you<br>
+  until the last page of my book 🫂<br><br>
+ </div>`;
+}
+
 </script>
 
 </body>
