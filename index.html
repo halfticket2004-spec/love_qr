@@ -15,7 +15,7 @@ body{
   color:white;
   text-align:center;
 }
-.container{padding:15px}
+.container{padding:20px}
 input{
   width:80%;padding:14px;font-size:20px;
   border:none;border-radius:12px;text-align:center
@@ -33,43 +33,21 @@ button{
 @keyframes fall{
   to{transform:translateY(110vh) rotate(360deg)}
 }
-
-/* page flip */
-.page{
-  animation:flip 0.8s ease forwards;
-}
+.page{animation:flip 0.8s ease forwards}
 @keyframes flip{
   from{transform:rotateY(0deg)}
   to{transform:rotateY(180deg)}
 }
-
-.maze-wrap{
-  position:relative;
-  display:inline-block;
-}
-.maze-wrap img{
-  width:360px;
-}
-.maze-overlay{
-  position:absolute;
-  top:0;left:0;
-}
-.girl, .boy{
-  position:absolute;
-  font-size:28px;
-}
-.girl{left:10px; top:10px;}
-.boy{right:10px; bottom:10px;}
-
-.gifts{
-  display:flex;justify-content:center;
-  gap:20px;margin-top:25px
-}
+.maze-wrap{position:relative;display:inline-block}
+.maze-wrap img{width:340px}
+.maze-overlay{position:absolute;top:0;left:0}
+.girl,.boy{position:absolute;font-size:28px}
+.girl{left:5px;top:5px}
+.boy{right:5px;bottom:5px}
+.gifts{display:flex;justify-content:center;gap:20px;margin-top:25px}
 .gift{
-  width:80px;height:80px;
-  background:#ff4f81;
-  border-radius:15px;
-  font-size:40px;
+  width:80px;height:80px;background:#ff4f81;
+  border-radius:15px;font-size:40px;
   display:flex;align-items:center;justify-content:center;
   animation:bounce 1s infinite alternate
 }
@@ -77,16 +55,13 @@ button{
   from{transform:translateY(0)}
   to{transform:translateY(-20px)}
 }
-.controls{
-  display:flex;justify-content:center;
-  gap:40px;margin-top:10px
-}
 .letter{
   background:white;color:#bb377d;
   padding:25px;border-radius:20px;
   margin:20px;font-size:20px
 }
 canvas{touch-action:none}
+.controls{display:flex;justify-content:center;gap:40px;margin-top:10px}
 </style>
 </head>
 
@@ -114,12 +89,10 @@ for(let i=0;i<25;i++){
  document.body.appendChild(f);
 }
 
-// music
 function startExperience(){
  document.getElementById("bgMusic").play().catch(()=>{});
 }
 
-// entry
 function check(){
  let v=document.getElementById("answer").value.trim().toLowerCase();
  if(v==="its me") mazeGame();
@@ -127,68 +100,78 @@ function check(){
  "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
 }
 
-/* MAZE GAME — EXACT IMAGE */
+/* ================= MAZE GAME ================= */
+
 function mazeGame(){
  document.getElementById("app").innerHTML=
  `<h2>Find him ❤️</h2>
  <p>Every path inside fails… love finds a way around</p>
-
  <div class="maze-wrap">
    <img src="IMG_20260129_180303.png">
-   <canvas class="maze-overlay" id="draw" width="360" height="360"></canvas>
+   <canvas id="draw" class="maze-overlay" width="340" height="340"></canvas>
    <div class="girl">👩</div>
    <div class="boy">👦</div>
  </div>`;
 
  const c=document.getElementById("draw");
- const x=c.getContext("2d");
- let drawing=false, escaped=false;
+ const ctx=c.getContext("2d");
+ let drawing=false;
+ let top=false,bottom=false,left=false,right=false;
 
  c.addEventListener("pointerdown",e=>{
   drawing=true;
-  x.beginPath();
-  x.moveTo(e.offsetX,e.offsetY);
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX,e.offsetY);
+  top=bottom=left=right=false;
  });
+
  c.addEventListener("pointerup",()=>drawing=false);
+
  c.addEventListener("pointermove",e=>{
   if(!drawing) return;
-  let dx=e.offsetX, dy=e.offsetY;
-  x.strokeStyle="#ff69b4";
-  x.lineWidth=3;
-  x.lineTo(dx,dy); x.stroke();
+  const x=e.offsetX,y=e.offsetY;
+  ctx.strokeStyle="#ff69b4";
+  ctx.lineWidth=3;
+  ctx.lineTo(x,y); ctx.stroke();
 
-  if(dx<0 || dy<0 || dx>360 || dy>360) escaped=true;
+  if(x<=5) left=true;
+  if(x>=c.width-5) right=true;
+  if(y<=5) top=true;
+  if(y>=c.height-5) bottom=true;
 
-  if(escaped && dx>300 && dy>300){
+  if(top&&bottom&&left&&right){
+    drawing=false;
     setTimeout(mazeGifts,500);
   }
  });
 }
 
-// gifts after maze
+/* ============== MAZE GIFTS + LETTER ============== */
+
 function mazeGifts(){
  document.getElementById("app").innerHTML=
  `<div class="gifts">
-  <div class="gift" onclick="mazeLetter()">🎁</div>
-  <div class="gift" onclick="mazeLetter()">🎁</div>
-  <div class="gift" onclick="mazeLetter()">🎁</div>
-  <div class="gift" onclick="mazeLetter()">🎁</div>
+   <div class="gift" onclick="mazeLetter()">🎁</div>
+   <div class="gift" onclick="mazeLetter()">🎁</div>
+   <div class="gift" onclick="mazeLetter()">🎁</div>
+   <div class="gift" onclick="mazeLetter()">🎁</div>
  </div>`;
 }
 
 function mazeLetter(){
  document.getElementById("app").innerHTML=
  `<div class="letter page">
-  i promise you 💌<br><br>
-  Even on the most chaotic and ordinary days,<br>
-  I’ll find a way to make you smile 😁<br><br>
-  Just the way you found your way in the game 💖
-  <br><br>
-  <button onclick="carGame()">Next 📖</button>
+   i promise you 💌<br><br>
+   Even on the most chaotic and ordinary days,<br>
+   I’ll find a way to make you smile 😁<br><br>
+   Just the way you found your way in the game 💖
+   <br><br>
+   <button onclick="carGame()">Next 🚗</button>
  </div>`;
 }
 
-/* CAR GAME (unchanged, working) */
+/* ================= CAR GAME ================= */
+
 function carGame(){
  document.getElementById("app").innerHTML=
  `<h2>Survive 1 minute 🚗</h2>
@@ -217,56 +200,55 @@ function carGame(){
   for(let o of obs){
     o.y+=4;x.fillText("🚙",o.x,o.y);
     if(Math.abs(o.x-car.x)<25 && Math.abs(o.y-car.y)<25){
-      carGame();return;
+      carGame(); return;
     }
   }
   obs=obs.filter(o=>o.y<450);
 
   let t=60-Math.floor((Date.now()-start)/1000);
   document.getElementById("timer").innerText="Time: "+t;
-  if(t<=0){ finalPromise('end'); return; }
+  if(t<=0){ carGifts(); return; }
 
   requestAnimationFrame(loop);
  }
  loop();
 }
 
-// After car gifts
+/* ============== CAR GIFTS + LETTER ============== */
+
 function carGifts(){
  document.getElementById("app").innerHTML=
- `<h2>You made it 💖</h2>
- <div class="gifts">
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <button onclick="carLetter()">Next 📖</button>
-
+ `<div class="gifts">
+   <div class="gift" onclick="carLetter()">🎁</div>
+   <div class="gift" onclick="carLetter()">🎁</div>
+   <div class="gift" onclick="carLetter()">🎁</div>
  </div>`;
 }
 
 function carLetter(){
  document.getElementById("app").innerHTML=
- `<div class="letter">
- i promise you 💌<br><br>
- On gloomy and bad days,<br>
- I will reach you through all the hurdles<br>
- as fast as I can 🫶<br><br>
- just the way you did in the game 💖
+ `<div class="letter page">
+   i promise you 💌<br><br>
+   On gloomy and bad days,<br>
+   I will reach you through all the hurdles<br>
+   as fast as I can 🚗💨<br><br>
+   just the way you did in the game 💖
+   <br><br>
+   <button onclick="finalPage()">Next 📖</button>
  </div>`;
 }
 
+/* ================= FINAL PAGE (END) ================= */
 
-// final promise page
-function finalPromise(next){
+function finalPage(){
  document.getElementById("app").innerHTML=
  `<div class="letter page">
-  I promise you 💖<br><br>
-  I will stay with you<br>
-  until the last page of my book 🫂<br><br>
+   I promise you 🫂💖<br><br>
+   I will stay with you<br>
+   until the last page of my book 📖<br><br>
+   ❤️
  </div>`;
 }
-
 </script>
 
 </body>
