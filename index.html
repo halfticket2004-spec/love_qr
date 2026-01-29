@@ -139,9 +139,16 @@ function mazeGame(){
   if(y<=5) top=true;
   if(y>=c.height-5) bottom=true;
 
-  if(top&&bottom&&left&&right){
-    drawing=false;
-    setTimeout(mazeGifts,500);
+  const sidesTouched =
+  (top?1:0) +
+  (bottom?1:0) +
+  (left?1:0) +
+  (right?1:0);
+
+if(sidesTouched >= 3){
+  drawing = false;
+  c.removeEventListener("pointermove", arguments.callee);
+  setTimeout(mazeGifts, 500);
   }
  });
 }
