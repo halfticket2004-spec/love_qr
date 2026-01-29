@@ -193,21 +193,22 @@ function carGame(){
  const x=c.getContext("2d");
  let car={x:130,y:350},obs=[],start=Date.now();
 
- window.moveL=()=>{if(car.x>90) car.x-=30}
- window.moveR=()=>{if(car.x<200) car.x+=30}
+ window.moveL=()=>{if(car.x>70) car.x-=40}
+ window.moveR=()=>{if(car.x<230) car.x+=40}
 
  function loop(){
   x.clearRect(0,0,300,420);
   x.fillStyle="#444";x.fillRect(80,0,140,420);
   x.font="28px serif";x.fillText("🚗",car.x,car.y);
 
-  if(Math.random()<0.04)
+  if(Math.random()<0.02)
     obs.push({x:90+Math.random()*120,y:-20});
 
   for(let o of obs){
-    o.y+=4;x.fillText("🚙",o.x,o.y);
-    if(Math.abs(o.x-car.x)<25 && Math.abs(o.y-car.y)<25){
-      carGame(); return;
+    o.y+=2;x.fillText("🚙",o.x,o.y);
+    if(Math.abs(o.x-car.x)<18 && Math.abs(o.y-car.y)<18){
+      carGame();
+      return;
     }
   }
   obs=obs.filter(o=>o.y<450);
