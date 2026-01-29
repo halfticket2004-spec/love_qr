@@ -71,12 +71,15 @@ canvas{touch-action:none}
 <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4b6b6f87f1.mp3">
 </audio>
 
-<div class="container" id="app">
-<h1>yevaru ra nuvvu 👀</h1><br>
-<button onclick="startExperience()">Tap to start ❤️</button><br><br>
-<input id="answer" placeholder="Type here">
-<br>
-<button onclick="check()">Submit</button>
+<div class="container">
+  <div id="effects"></div>
+
+  <div id="app">
+    <h1>yevaru ra nuvvu 👀</h1><br>
+    <button onclick="startExperience()">Tap to start ❤️</button><br><br>
+    <input id="answer" placeholder="Type here"><br>
+    <button onclick="check()">Submit</button>
+  </div>
 </div>
 
 <script>
@@ -86,7 +89,7 @@ for(let i=0;i<25;i++){
  f.className="flower"; f.innerHTML="🌸";
  f.style.left=Math.random()*100+"vw";
  f.style.animationDuration=5+Math.random()*6+"s";
- document.body.appendChild(f);
+ document.getElementById("effects").appendChild(f);
 }
 
 function startExperience(){
