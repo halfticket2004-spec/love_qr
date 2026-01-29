@@ -26,7 +26,6 @@ button{
   background:white;color:#bb377d;
   margin-top:15px
 }
-canvas{touch-action:none}
 .flower{
   position:absolute;top:-40px;
   animation:fall linear infinite
@@ -34,6 +33,34 @@ canvas{touch-action:none}
 @keyframes fall{
   to{transform:translateY(110vh) rotate(360deg)}
 }
+
+/* page flip */
+.page{
+  animation:flip 0.8s ease forwards;
+}
+@keyframes flip{
+  from{transform:rotateY(0deg)}
+  to{transform:rotateY(180deg)}
+}
+
+.maze-wrap{
+  position:relative;
+  display:inline-block;
+}
+.maze-wrap img{
+  width:360px;
+}
+.maze-overlay{
+  position:absolute;
+  top:0;left:0;
+}
+.girl, .boy{
+  position:absolute;
+  font-size:28px;
+}
+.girl{left:10px; top:10px;}
+.boy{right:10px; bottom:10px;}
+
 .gifts{
   display:flex;justify-content:center;
   gap:20px;margin-top:25px
@@ -59,6 +86,7 @@ canvas{touch-action:none}
   padding:25px;border-radius:20px;
   margin:20px;font-size:20px
 }
+canvas{touch-action:none}
 </style>
 </head>
 
@@ -99,73 +127,48 @@ function check(){
  "<h2>yevaru nanna rey nuvvu..</h2><h2>vellipora nanna 😤</h2>";
 }
 
-/* GAME 1 — MAZE */
+/* MAZE GAME — EXACT IMAGE */
 function mazeGame(){
  document.getElementById("app").innerHTML=
  `<h2>Find him ❤️</h2>
  <p>Every path inside fails… love finds a way around</p>
- <canvas id="maze" width="360" height="360"></canvas>`;
 
- const c=document.getElementById("maze");
+ <div class="maze-wrap">
+   <img src="IMG_20260129_180303.png">
+   <canvas class="maze-overlay" id="draw" width="360" height="360"></canvas>
+   <div class="girl">👩</div>
+   <div class="boy">👦</div>
+ </div>`;
+
+ const c=document.getElementById("draw");
  const x=c.getContext("2d");
- const cx=180,cy=180,R=160;
- const girl={x:cx,y:cy-R+18};
- const boy={x:cx+R-18,y:cy};
- let drawing=false,escaped=false;
-
- function drawMaze(){
-  x.clearRect(0,0,360,360);
-
-  x.save();
-  x.beginPath();
-  x.arc(cx,cy,R,0,Math.PI*2);
-  x.clip();
-
-  x.strokeStyle="black";x.lineWidth=3;
-  const step=22;
-  for(let i=40;i<320;i+=step){
-    for(let j=40;j<320;j+=step){
-      if((i+j)%44===0){
-        x.beginPath();x.moveTo(i,j);x.lineTo(i+step,j);x.stroke();
-      }
-      if((i*j)%3===0){
-        x.beginPath();x.moveTo(i,j);x.lineTo(i,j+step);x.stroke();
-      }
-    }
-  }
-  x.restore();
-
-  x.lineWidth=4;
-  x.beginPath();x.arc(cx,cy,R,0,Math.PI*2);x.stroke();
-
-  x.font="26px serif";
-  x.fillText("👩",girl.x-10,girl.y+10);
-  x.fillText("👦",boy.x-10,boy.y+10);
- }
- drawMaze();
+ let drawing=false, escaped=false;
 
  c.addEventListener("pointerdown",e=>{
   drawing=true;
-  x.beginPath();x.moveTo(e.offsetX,e.offsetY);
+  x.beginPath();
+  x.moveTo(e.offsetX,e.offsetY);
  });
  c.addEventListener("pointerup",()=>drawing=false);
  c.addEventListener("pointermove",e=>{
   if(!drawing) return;
-  let dx=e.offsetX,dy=e.offsetY;
-  x.strokeStyle="#ff69b4";x.lineWidth=3;
-  x.lineTo(dx,dy);x.stroke();
-  if(Math.hypot(dx-cx,dy-cy)>R+5) escaped=true;
-  if(escaped && Math.hypot(dx-boy.x,dy-boy.y)<20){
-    setTimeout(mazeGifts,400);
+  let dx=e.offsetX, dy=e.offsetY;
+  x.strokeStyle="#ff69b4";
+  x.lineWidth=3;
+  x.lineTo(dx,dy); x.stroke();
+
+  if(dx<0 || dy<0 || dx>360 || dy>360) escaped=true;
+
+  if(escaped && dx>300 && dy>300){
+    setTimeout(mazeGifts,500);
   }
  });
 }
 
-// after maze gifts
+// gifts after maze
 function mazeGifts(){
  document.getElementById("app").innerHTML=
- `<h2>You found a way 💖</h2>
- <div class="gifts">
+ `<div class="gifts">
   <div class="gift" onclick="mazeLetter()">🎁</div>
   <div class="gift" onclick="mazeLetter()">🎁</div>
   <div class="gift" onclick="mazeLetter()">🎁</div>
@@ -175,17 +178,30 @@ function mazeGifts(){
 
 function mazeLetter(){
  document.getElementById("app").innerHTML=
- `<div class="letter">
- i promise you 💌<br><br>
- Even on the most chaotic and ordinary days,<br>
- I’ll find a way to make you smile 😁<br><br>
- Just the way you found your way in the game 💖
- <br><br>
- <button onclick="carGame()">Next game 🚗</button>
+ `<div class="letter page">
+  i promise you 💌<br><br>
+  Even on the most chaotic and ordinary days,<br>
+  I’ll find a way to make you smile 😁<br><br>
+  Just the way you found your way in the game 💖
+  <br><br>
+  <button onclick="finalPromise('car')">Next 📖</button>
  </div>`;
 }
 
-/* GAME 2 — CAR */
+// final promise page
+function finalPromise(next){
+ document.getElementById("app").innerHTML=
+ `<div class="letter page">
+  I promise you 💖<br><br>
+  I will stay with you<br>
+  until the last page of my book 🫂<br><br>
+  ${next==='car'
+   ? '<button onclick="carGame()">Start next game 🚗</button>'
+   : '📖 The End'}
+ </div>`;
+}
+
+/* CAR GAME (unchanged, working) */
 function carGame(){
  document.getElementById("app").innerHTML=
  `<h2>Survive 1 minute 🚗</h2>
@@ -198,9 +214,7 @@ function carGame(){
 
  const c=document.getElementById("road");
  const x=c.getContext("2d");
- let car={x:130,y:350};
- let obs=[];
- let start=Date.now();
+ let car={x:130,y:350},obs=[],start=Date.now();
 
  window.moveL=()=>{if(car.x>90) car.x-=30}
  window.moveR=()=>{if(car.x<200) car.x+=30}
@@ -223,34 +237,11 @@ function carGame(){
 
   let t=60-Math.floor((Date.now()-start)/1000);
   document.getElementById("timer").innerText="Time: "+t;
-  if(t<=0){ carGifts(); return; }
+  if(t<=0){ finalPromise('end'); return; }
 
   requestAnimationFrame(loop);
  }
  loop();
-}
-
-// after car gifts
-function carGifts(){
- document.getElementById("app").innerHTML=
- `<h2>You made it 💖</h2>
- <div class="gifts">
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <div class="gift" onclick="carLetter()">🎁</div>
-  <div class="gift" onclick="carLetter()">🎁</div>
- </div>`;
-}
-
-function carLetter(){
- document.getElementById("app").innerHTML=
- `<div class="letter">
- i promise you 💌<br><br>
- On gloomy and bad days,<br>
- I will reach you through all the hurdles<br>
- as fast as I can 🫶<br><br>
- just the way you did in the game 💖
- </div>`;
 }
 </script>
 
